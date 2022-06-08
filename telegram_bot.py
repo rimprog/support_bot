@@ -3,16 +3,24 @@ import logging
 
 from telegram import Update
 from telegram.ext import Updater, CommandHandler, MessageHandler, CallbackContext, Filters
-
 from dotenv import load_dotenv
+
+from dialogflow_helper import get_fullfilment_text
 
 
 def start(update: Update, context: CallbackContext):
     context.bot.send_message(chat_id=update.effective_chat.id, text='Здравствуйте')
 
 
-def echo(update: Update, context: CallbackContext):
-    context.bot.send_message(chat_id=update.effective_chat.id, text=update.message.text)
+def dialogflow_echo(update: Update, context: CallbackContext):
+    text = get_fullfilment_text(
+        os.getenv('GOOGLE_PROJECT_ID'),
+        update.effective_chat.id,
+        update.message.text,
+        'ru'
+    )
+
+    context.bot.send_message(chat_id=update.effective_chat.id, text=text)
 
 
 def main():
@@ -27,10 +35,10 @@ def main():
     dispatcher = updater.dispatcher
 
     start_handler = CommandHandler('start', start)
-    echo_handler = MessageHandler(Filters.text & (~Filters.command), echo)
+    dialogflow_echo_handler = MessageHandler(Filters.text & (~Filters.command), dialogflow_echo)
 
     dispatcher.add_handler(start_handler)
-    dispatcher.add_handler(echo_handler)
+    dispatcher.add_handler(dialogflow_echo_handler)
 
     updater.start_polling()
 
