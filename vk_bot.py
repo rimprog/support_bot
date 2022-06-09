@@ -5,7 +5,7 @@ from vk_api import VkApi
 from vk_api.longpoll import VkLongPoll, VkEventType
 from dotenv import load_dotenv
 
-from dialogflow_helper import get_fullfilment_text
+from utils.dialogflow_helper import get_fullfilment_text
 
 
 def dialogflow_echo(event, vk_api):

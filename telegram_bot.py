@@ -5,7 +5,7 @@ from telegram import Update
 from telegram.ext import Updater, CommandHandler, MessageHandler, CallbackContext, Filters
 from dotenv import load_dotenv
 
-from dialogflow_helper import get_fullfilment_text
+from utils.dialogflow_helper import get_fullfilment_text
 
 
 def start(update: Update, context: CallbackContext):
