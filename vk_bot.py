@@ -9,18 +9,19 @@ from dialogflow_helper import get_fullfilment_text
 
 
 def dialogflow_echo(event, vk_api):
-    text = get_fullfilment_text(
+    text, is_fallback = get_fullfilment_text(
         os.getenv('GOOGLE_PROJECT_ID'),
         event.user_id,
         event.text,
         'ru'
     )
 
-    vk_api.messages.send(
-        user_id=event.user_id,
-        message=text,
-        random_id=random.randint(1,1000)
-    )
+    if not is_fallback:
+        vk_api.messages.send(
+            user_id=event.user_id,
+            message=text,
+            random_id=random.randint(1,1000)
+        )
 
 
 def main():

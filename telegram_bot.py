@@ -13,7 +13,7 @@ def start(update: Update, context: CallbackContext):
 
 
 def dialogflow_echo(update: Update, context: CallbackContext):
-    text = get_fullfilment_text(
+    text, is_fallback = get_fullfilment_text(
         os.getenv('GOOGLE_PROJECT_ID'),
         update.effective_chat.id,
         update.message.text,
