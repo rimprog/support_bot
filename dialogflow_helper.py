@@ -1,10 +1,12 @@
 import os
+import json
 
 from google.cloud import dialogflow
 from dotenv import load_dotenv
 
 
 def get_fullfilment_text(project_id, session_id, text, language_code):
+    """Matches input text with intents and return most probably intent text."""
     session_client = dialogflow.SessionsClient()
     session = session_client.session_path(project_id, session_id)
 
@@ -21,8 +23,44 @@ def get_fullfilment_text(project_id, session_id, text, language_code):
     return fulfillment_text
 
 
+def create_intent(project_id, display_name, training_phrases_parts, message_texts):
+    """Create an intent of the given intent type."""
+    intents_client = dialogflow.IntentsClient()
+
+    parent = dialogflow.AgentsClient.agent_path(project_id)
+    training_phrases = []
+    for training_phrases_part in training_phrases_parts:
+        part = dialogflow.Intent.TrainingPhrase.Part(text=training_phrases_part)
+        training_phrase = dialogflow.Intent.TrainingPhrase(parts=[part])
+        training_phrases.append(training_phrase)
+
+    text = dialogflow.Intent.Message.Text(text=message_texts)
+    message = dialogflow.Intent.Message(text=text)
+
+    intent = dialogflow.Intent(
+        display_name=display_name, training_phrases=training_phrases, messages=[message]
+    )
+
+    response = intents_client.create_intent(
+        request={"parent": parent, "intent": intent}
+    )
+
+    print(f"Intent '{display_name}' was created.")
+
+
 def main():
-    pass
+    load_dotenv()
+
+    with open("content/questions.json", "r") as my_file:
+        questions = json.load(my_file)
+
+    for question_title, question_content in questions.items():
+        create_intent(
+            os.getenv('GOOGLE_PROJECT_ID'),
+            question_title,
+            question_content['questions'],
+            [question_content['answer'],]
+        )
 
 
 if __name__ == '__main__':
