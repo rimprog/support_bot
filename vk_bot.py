@@ -6,6 +6,7 @@ from vk_api.longpoll import VkLongPoll, VkEventType
 from dotenv import load_dotenv
 
 from utils.dialogflow_helper import get_fullfilment_text
+from utils.telegram_logger import create_tg_logger
 
 
 def dialogflow_echo(event, vk_api):
@@ -27,13 +28,18 @@ def dialogflow_echo(event, vk_api):
 def main():
     load_dotenv()
 
+    logger = create_tg_logger()
+
     vk_session = VkApi(token=os.getenv('VK_TOKEN'))
     vk_api = vk_session.get_api()
 
     longpoll = VkLongPoll(vk_session)
     for event in longpoll.listen():
         if event.type == VkEventType.MESSAGE_NEW and event.to_me:
-            dialogflow_echo(event, vk_api)
+            try:
+                dialogflow_echo(event, vk_api)
+            except Exception:
+                logger.exception('An exception was raised while handling an event')
 
 
 if __name__ == '__main__':
