@@ -16,6 +16,7 @@
 
 - `GOOGLE_PROJECT_ID` — [идентификатор google проекта](https://cloud.google.com/resource-manager/docs/creating-managing-projects#identifying_projects), необходимый для работы dialogflow. Чтобы его получить, пройдите шаги описанные в [мануале по настройке dialogflow](https://cloud.google.com/dialogflow/es/docs/quick/setup).
 - `GOOGLE_APPLICATION_CREDENTIALS` — выполнив [пункт настройки dialogflow](https://cloud.google.com/dialogflow/es/docs/quick/setup#sa-create) получите необходимый json файл и укажите в текущей переменной путь к этому файлу.
+- `QUESTIONS_ANSWERS_PATH` — укажите путь к файлу вопросов и ответов, которые будут загружены в [intents dialogflow](https://cloud.google.com/dialogflow/es/docs/intents-overview). По умолчанию используются тестовые вопросы и ответы расположенные в файле `content/questions.json`.
 
 - `TELEGRAM_LOGGER_BOT_TOKEN` — токен вашего телеграм бота, в который будут приходить все логи работы ботов. Создать нового телеграм бота и получить токен можно у [BotFather](https://telegram.me/BotFather). После создания бота, запустите его, перейдя по сгенерированной ссылке и нажав кнопку `start`.
 - `TELEGRAM_DEVELOPER_USER_ID` — id пользователя, кому бот будет присылать все логи работы ботов. Получить свой id можно у [этого телеграм бота](https://telegram.me/userinfobot).

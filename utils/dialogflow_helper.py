@@ -47,13 +47,16 @@ def create_intent(project_id, display_name, training_phrases_parts, message_text
         request={"parent": parent, "intent": intent}
     )
 
-    print(f"Intent '{display_name}' was created.")
-
 
 def main():
     load_dotenv()
 
-    with open("content/questions.json", "r") as my_file:
+    questions_answers_path = os.getenv(
+        'QUESTIONS_ANSWERS_PATH',
+        default="content/questions.json"
+    )
+
+    with open(questions_answers_path, "r") as my_file:
         questions = json.load(my_file)
 
     for question_title, question_content in questions.items():
