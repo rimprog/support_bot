@@ -1,12 +1,17 @@
 import os
 import random
+import logging
 
 from vk_api import VkApi
 from vk_api.longpoll import VkLongPoll, VkEventType
+from telegram import Bot
 from dotenv import load_dotenv
 
 from utils.dialogflow_helper import get_fullfilment_text
-from utils.telegram_logger import create_tg_logger
+from utils.telegram_logger import TelegramLogsHandler
+
+
+logger = logging.getLogger('Telegram logger')
 
 
 def dialogflow_echo(event, vk_api):
@@ -28,7 +33,17 @@ def dialogflow_echo(event, vk_api):
 def main():
     load_dotenv()
 
-    logger = create_tg_logger()
+    telegram_logger_bot_token = os.getenv('TELEGRAM_LOGGER_BOT_TOKEN')
+    developer_chat_id = os.getenv('TELEGRAM_DEVELOPER_USER_ID')
+
+    logger_tg_bot = Bot(token=telegram_logger_bot_token)
+
+    logging.basicConfig(
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        level=logging.INFO
+    )
+    logger.setLevel(logging.INFO)
+    logger.addHandler(TelegramLogsHandler(logger_tg_bot, developer_chat_id))
 
     vk_session = VkApi(token=os.getenv('VK_TOKEN'))
     vk_api = vk_session.get_api()
@@ -39,7 +54,7 @@ def main():
             try:
                 dialogflow_echo(event, vk_api)
             except Exception:
-                logger.exception('An exception was raised while handling an event')
+                logger.exception('An exception was raised while handling vkontakte event:')
 
 
 if __name__ == '__main__':
